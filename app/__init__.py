@@ -26,7 +26,6 @@ def create_app(config_name):
     # db = )SQLAlchemy(app  # 创建SQLAlchemy对象的时候，它需要flask应用的对象，所以此时我们就可以将flask对象当做实参进行传递
     db.init_app(app)  # 如果事前SQLAlchemy对象没有进行与flask对象关联，那么此时可以完善这个操作
 
-
     return app
 
 
