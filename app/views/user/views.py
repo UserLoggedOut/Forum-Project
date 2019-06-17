@@ -20,3 +20,9 @@ def login():
 def forget():
     return render_template("user/forget.html")
 
+
+# 主页
+@user_blu.route("/home")
+def home():
+    return render_template("user/home.html")
+
