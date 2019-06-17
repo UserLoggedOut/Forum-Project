@@ -3,7 +3,7 @@ from flask import render_template
 from app.views.user import user_blu
 
 
-# 注册试图
+# 注册
 @user_blu.route("/reg")
 def reg():
     return render_template("user/reg.html")
