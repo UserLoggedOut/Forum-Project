@@ -14,3 +14,9 @@ def reg():
 def login():
     return render_template("user/login.html")
 
+
+# 忘记密码
+@user_blu.route("/forget")
+def forget():
+    return render_template("user/forget.html")
+
