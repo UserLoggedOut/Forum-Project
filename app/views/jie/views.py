@@ -8,12 +8,12 @@ def index():
     return render_template("jie/index.html")
 
 
-@tiwen_blu.route("/detail.html")
+@tiwen_blu.route("/detail")
 def detail():
     return render_template("jie/detail.html")
 
 
-@tiwen_blu.route("/add.html")
+@tiwen_blu.route("/add")
 def add():
     return render_template("jie/add.html")
 
