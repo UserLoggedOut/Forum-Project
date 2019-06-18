@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for
 
 from app.models.models import User
-from app.views.user import user_blu
+from . import user_blu
 
 
 # 注册
