@@ -13,6 +13,8 @@ class Detail(db.Model):
     content = db.Column(db.Text, nullable=False)  # 社区详情内容
     clicks = db.Column(db.Integer, default=0)  # 社区详情浏览量
     index_image_url = db.Column(db.String(256))  # 社区详情列表图片路径
+    create_time = db.Column(db.DateTime, default=datetime.now)  # 记录的创建时间
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))  # 当前用户的作者id
     user = db.relationship('User', backref=db.backref('detail', lazy='dynamic'))  # user 关联
 
     def dict_detail(self):
@@ -56,4 +58,12 @@ class User(db.Model):
         }
 
         return ret
+
+    # followers = db.relationship('User',
+    #                             secondary=Follow.__tablename__,
+    #                             primaryjoin=(id == Follow.followed_id),
+    #                             secondaryjoin=(id == Follow.follower_id),
+    #                             backref=db.backref('followed', lazy='dynamic'),
+    #                             lazy='dynamic')
+
 
