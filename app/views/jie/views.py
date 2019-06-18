@@ -2,20 +2,20 @@ import random
 
 from flask import render_template, request, session
 
-from app.views.jie import tiwen_blu
+from app.views.jie import jie_blu
 
 
-@tiwen_blu.route("/index")
+@jie_blu.route("/index.html")
 def index():
     return render_template("jie/index.html")
 
 
-@tiwen_blu.route("/detail")
+@jie_blu.route("/detail.html")
 def detail():
     return render_template("jie/detail.html")
 
 
-@tiwen_blu.route("/add.html")
+@jie_blu.route("/add.html", methods=["GET", "POST"])
 def add():
     if request.method == "GET":
         session["number1"] = random.randint(0, 9)
