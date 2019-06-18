@@ -21,10 +21,6 @@ def reg():
         #     return redirect(url_for(''))
 
 
-
-
-
-
 # 登录
 @user_blu.route("/login")
 def login():
