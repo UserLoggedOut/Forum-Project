@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, session
 
 from app import db
 from app.models.models import Detail, User
@@ -24,15 +24,7 @@ def details(new_id):
     rank_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(5)  # 从detail数据表中查询点击最高的6个数据
     print(new_detail, "Detail对象")
 
+    # session 存储用户发布帖子对应的id
+    session["detail_id"] = new_detail.user_id
     return render_template("jie/detail.html", new_detail=new_detail, rank_detail=rank_detail)
-
-
-
-
-
-
-
-
-
-
 
