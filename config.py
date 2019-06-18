@@ -13,13 +13,13 @@ class DevelopmentConfig(Config):
     """开发环境中的配置类"""
     # 开启调试模式
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:python@localhost:3306/flask?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:python@localhost:3306/new_flask4?charset=utf8'
 
 
 class ProductionConfig(Config):
     """生产环境(线上)中配置类"""
     # 配置生产环境中使用的配置类
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:python@localhost:3306/flask?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:python@localhost:3306/new_flask4?charset=utf8'
 
 
 APPCONFIG = {
