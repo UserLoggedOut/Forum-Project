@@ -1,12 +1,28 @@
-from flask import render_template
+from flask import render_template, request, redirect, url_for
 
+from app.models.models import User
 from app.views.user import user_blu
 
 
 # 注册
-@user_blu.route("/reg")
+@user_blu.route("/reg", methods=["GET", "POST"])
 def reg():
-    return render_template("user/reg.html")
+    if request.method == "GET":
+        return render_template("user/reg.html")
+    elif request.method == "POST":
+        email = request.form.get("email")
+        username = request.form.get("username")
+        password = request.form.get("pass")
+        repass = request.form.get("repass")
+        vercode = request.form.get("vercode")
+        # if not password == repass:
+        #     print(4444)
+        #     # 如果密码不正确就返回一个新的页面
+        #     return redirect(url_for(''))
+
+
+
+
 
 
 # 登录
