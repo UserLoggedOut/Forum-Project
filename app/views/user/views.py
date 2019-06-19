@@ -1,12 +1,14 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, jsonify
 
+from app import db
 from app.models.models import User
-from app.views.user import user_blu
+
+from . import user_blu
 
 
 # 注册
 @user_blu.route("/reg", methods=["GET", "POST"])
-def reg():
+def reg(jsoify=None):
     if request.method == "GET":
         return render_template("user/reg.html")
     elif request.method == "POST":
@@ -15,20 +17,52 @@ def reg():
         password = request.form.get("pass")
         repass = request.form.get("repass")
         vercode = request.form.get("vercode")
-        # if not password == repass:
-        #     print(4444)
-        #     # 如果密码不正确就返回一个新的页面
-        #     return redirect(url_for(''))
+        print(email,username, password, repass, vercode)
 
+        # 判断
+        if password != repass:
 
+            ret = {
+                "errno":1001,
+                "errmsg":"两次密码不相同"
+            }
+            
+            return jsonify(ret)
 
+        # 数据库添加
+        user = User()
+        if user:
+            user.email = email
+            user.user_name = username
+            user.password_hash = password
+            db.session.add(user)
+            db.session.commit()
+            return "注册成功"
 
+        return "Aa"
 
 
 # 登录
-@user_blu.route("/login")
+@user_blu.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("user/login.html")
+    if request.method == "GET":
+        return render_template("user/login.html")
+
+    elif request.method == "POST":
+        # 1 获取数据
+        email = request.form.get("email")  # 邮箱
+        password = request.form.get("password")
+
+        print(email, password)
+
+        # 2 数据库查询
+        user_info = db.session.query(User).filter(User.email == email, User.password_hash == password).first()
+
+        if user_info:
+            print(user_info)
+            return "aa"
+
+        return redirect("/login")
 
 
 # 忘记密码
