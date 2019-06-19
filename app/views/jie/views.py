@@ -4,9 +4,7 @@ from flask import render_template, request, session
 
 import time
 from app import db
-from app.models.models import User
-
-
+from app.models.models import User, Detail
 
 from app.views.jie import jie_blu
 
@@ -46,4 +44,15 @@ def add():
             db.session.commit()
             return "验证码成功, 将数据提交到数据库中"
         return "验证码错误"
+
+
+# 编辑
+@jie_blu.route("/edit/<int:News_id>")
+def edit(News_id):
+    detail = db.session.query(Detail).filter(Detail.id == News_id).first()
+    return render_template("jie/add.html", detail=detail)
+
+
+
+
 
