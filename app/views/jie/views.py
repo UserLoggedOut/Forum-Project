@@ -1,6 +1,6 @@
 import random
 
-from flask import render_template, request, session
+from flask import render_template, request, session, redirect
 
 import time
 from app import db
@@ -21,9 +21,14 @@ def detail():
 
 @jie_blu.route("/add.html", methods=["GET", "POST"])
 def add():
+    user_id = session.get("user_id")
+    print(user_id, "add下的user信息")
+    if not user_id:
+        return redirect("/login")
     if request.method == "GET":
         session["number1"] = random.randint(0, 9)
         session["number2"] = random.randint(0, 9)
+
         return render_template("jie/add.html")
     elif request.method == "POST":
 
@@ -34,16 +39,21 @@ def add():
         experience = request.form.get("experience")
         vercode = request.form.get("vercode")
         ss = session.get("number1") + session.get("number2")
+
         if int(vercode) == int(ss):
-            user = db.session.query(User).filter(User.id == 1).first().detail  # 这里的1是模拟 登陆用户的id
-            user_new = user[0]  # 由于查询出来的是个列表 所用要从列表中取出来 也可以用for循环取出
-            user_new.title = title
-            user_new.create_time = create_time
-            user_new.contnet = content
-            db.session.add(user_new)
+            user = db.session.query(User).filter(User.id == user_id).first()  # 这里的1是模拟 登陆用户的id
+            # 详情数据查询
+            print(user, "useruser")
+            dtil = Detail()
+            dtil.title = title
+            dtil.content = content
+            dtil.user_id = user_id
+            db.session.add(dtil)
             db.session.commit()
+
             return "验证码成功, 将数据提交到数据库中"
-        return "验证码错误"
+
+    return "验证码错误"
 
 
 # 编辑
