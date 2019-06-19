@@ -9,8 +9,15 @@ from . import index_blu
 @index_blu.route("/index")
 def index():
     # 数据库查询出来
-    user = db.session.query(User).first()
+
     # 查询出来detail详情个数
+
+    # 2 取出用户登录成功存储的session数据
+    user_info = session.get("user_id")
+    print(user_info, "User中登录的数据")
+
+    # 3 再次数据库查询User整个数据
+    user = db.session.query(User).filter(User.id == user_info).first()
     user_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(5)    # 主页面
     return render_template("index.html", user=user, user_detail=user_detail)
 
@@ -27,4 +34,6 @@ def details(new_id):
     # session 存储用户发布帖子对应的id
     session["detail_id"] = new_detail.user_id
     return render_template("jie/detail.html", new_detail=new_detail, rank_detail=rank_detail)
+
+
 
