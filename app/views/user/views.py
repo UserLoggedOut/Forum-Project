@@ -1,6 +1,7 @@
+import random
 import time
 
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import render_template, request, redirect, url_for, jsonify, session
 
 from app import db
 from app.models.models import User
@@ -12,18 +13,23 @@ from . import user_blu
 @user_blu.route("/reg", methods=["GET", "POST"])
 def reg(jsoify=None):
     if request.method == "GET":
+        session["num1"] = random.randint(0, 9)
+        session["num2"] = random.randint(0, 9)
         return render_template("user/reg.html")
     elif request.method == "POST":
         localtime = time.asctime(time.localtime(time.time()))
-        create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())  # 注册的时间
         email = request.form.get("email")
         username = request.form.get("username")
         password = request.form.get("pass")
         repass = request.form.get("repass")
         vercode = request.form.get("vercode")
+        ss = session.get("num1") + session.get("num2")
         print(email, username, password, repass, vercode)
+        print(ss, '-----人类验证码')
 
         # 判断
+
         if password != repass:
 
             ret = {
@@ -34,17 +40,19 @@ def reg(jsoify=None):
             return jsonify(ret)
 
         # 数据库添加
-        user = User()
-        if user:
-            user.email = email
-            user.user_name = username
-            user.password_hash = password
-            user.create_time = create_time
-            db.session.add(user)
-            db.session.commit()
-            return "注册成功"
+        if int(vercode) == int(ss):
+            user = User()
+            if user:
+                user.email = email
+                user.user_name = username
+                user.password_hash = password
+                user.create_time = create_time
+                db.session.add(user)
+                db.session.commit()
+                return "注册成功"
 
-        return "Aa"
+            return "Aa"
+        return "验证码错误"
 
 
 # 登录
@@ -57,16 +65,13 @@ def login():
         # 1 获取数据
         email = request.form.get("email")  # 邮箱
         password = request.form.get("password")
-
         print(email, password)
-
         # 2 数据库查询
         user_info = db.session.query(User).filter(User.email == email, User.password_hash == password).first()
 
         if user_info:
             print(user_info)
             return "aa"
-
         return redirect("/login")
 
 
