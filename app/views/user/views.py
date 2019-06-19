@@ -4,7 +4,7 @@ import time
 from flask import render_template, request, redirect, url_for, jsonify, session
 
 from app import db
-from app.models.models import User
+from app.models.models import User, Detail
 
 from . import user_blu
 
@@ -89,7 +89,8 @@ def home():
 # 用户中心
 @user_blu.route("/index")
 def index():
-    return render_template("user/index.html")
+    aaa = db.session.query(Detail).all()
+    return render_template("user/index.html", aaa=aaa)
 
 
 # 基本设置
