@@ -50,7 +50,7 @@ def add():
 @jie_blu.route("/edit/<int:News_id>")
 def edit(News_id):
     detail = db.session.query(Detail).filter(Detail.id == News_id).first()
-    return render_template("jie/add.html", detail=detail)
+    return render_template("jie/edit.html", detail=detail)
 
 
 
