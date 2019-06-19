@@ -6,15 +6,17 @@ import time
 from app import db
 from app.models.models import User
 
+
+
 from app.views.jie import jie_blu
 
 
-@jie_blu.route("/index")
+@jie_blu.route("/index.html")
 def index():
     return render_template("jie/index.html")
 
 
-@jie_blu.route("/detail")
+@jie_blu.route("/detail.html")
 def detail():
     return render_template("jie/detail.html")
 
@@ -39,7 +41,7 @@ def add():
             user_new = user[0]  # 由于查询出来的是个列表 所用要从列表中取出来 也可以用for循环取出
             user_new.title = title
             user_new.create_time = create_time
-            user_new.content = content
+            user_new.contnet = content
             db.session.add(user_new)
             db.session.commit()
             return "验证码成功, 将数据提交到数据库中"
