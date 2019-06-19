@@ -33,10 +33,10 @@
       <!-- 登入后的状态 -->
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="javascript:;">
-          <cite class="layui-hide-xs">贤心</cite>
+          <cite class="layui-hide-xs">{{ user.user_name }}</cite>
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
           <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+          <img src="{{ user.avatar_url }}">
         </a>
         <dl class="layui-nav-child">
           <dd><a href="../user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
@@ -51,12 +51,15 @@
 </div>
 
 <div class="fly-home fly-panel" style="background-image: url();">
-  <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+  <img src="{{ user.avatar_url }}" alt="{{ user.user_name }}">
   <i class="iconfont icon-renzheng" title="Fly社区认证"></i>
   <h1>
-    贤心
+    {{ user.user_name }}
+      {% if user.gender == "MAN" %}
     <i class="iconfont icon-nan"></i>
-    <!-- <i class="iconfont icon-nv"></i>  -->
+      {% else %}
+    <i class="iconfont icon-nv"></i>
+      {% endif %}
     <i class="layui-badge fly-badge-vip">VIP3</i>
     <!--
     <span style="color:#c00;">（管理员）</span>
@@ -69,11 +72,14 @@
 
   <p class="fly-home-info">
     <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">66666 飞吻</span>
-    <i class="iconfont icon-shijian"></i><span>2015-6-17 加入</span>
+    <i class="iconfont icon-shijian"></i><span>{{ user.create_time }} 加入</span>
     <i class="iconfont icon-chengshi"></i><span>来自杭州</span>
   </p>
-
-  <p class="fly-home-sign">（人生仿若一场修行）</p>
+    {% if user.signatura %}
+  <p class="fly-home-sign">（{{ user.signature }}）</p>
+    {% else %}
+  <p class="fly-home-sign">（这个家伙很懒，啥都没有写！）</p>
+    {% endif %}
 
   <div class="fly-sns" data-user="">
     <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
@@ -178,13 +184,13 @@ layui.cache.page = 'user';
 layui.cache.user = {
   username: '游客'
   ,uid: -1
-  ,avatar: '../../res/images/avatar/00.jpg'
+  ,avatar: '../../static/images/avatar/00.jpg'
   ,experience: 83
   ,sex: '男'
 };
 layui.config({
   version: "3.0.0"
-  ,base: '../../res/mods/'
+  ,base: '../../static/mods/'
 }).extend({
   fly: 'index'
 }).use('fly');
