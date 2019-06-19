@@ -1,7 +1,6 @@
 from flask import render_template, request, redirect, url_for
 
-from app import db
-from app.models.models import User, Detail
+from app.models.models import User
 from . import user_blu
 
 
@@ -43,8 +42,8 @@ def home():
 # 用户中心
 @user_blu.route("/index")
 def index():
-    aaa = db.session.query(Detail).all()
-    return render_template("user/index.html", aaa=aaa)
+    return render_template("user/index.html")
+
 
 # 基本设置
 @user_blu.route("/set")
