@@ -91,10 +91,10 @@
       
       <div class="fly-column-right layui-hide-xs"> 
         <span class="fly-search"><i class="layui-icon"></i></span> 
-        <a href="add.html" class="layui-btn">发表新帖</a> 
+        <a href="/jie/add.html" class="layui-btn">发表新帖</a>
       </div> 
       <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;"> 
-        <a href="add.html" class="layui-btn">发表新帖</a> 
+        <a href="/jie/add.html" class="layui-btn">发表新帖</a>
       </div> 
     </div>
   </div>
@@ -104,7 +104,7 @@
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md8 content detail">
       <div class="fly-panel detail-box">
-        <h1>{{ new_detail.title }}</h1>
+{#        <h1>{{ new_detail.title }}</h1>#}
         <div class="fly-detail-info">
           <!-- <span class="layui-badge">审核中</span> -->
           <span class="layui-badge layui-bg-green fly-detail-column">动态</span>
@@ -135,7 +135,7 @@
           </a>
           <div class="fly-detail-user">
             <a href="../user/home.html" class="fly-link">
-              <cite>{{ new_detail.user.user_name }}</cite>
+{#              <cite>{{ new_detail.user.user_name }}</cite>#}
               <i class="iconfont icon-renzheng" title="#"></i>
               <i class="layui-badge fly-badge-vip">VIP3</i>
             </a>
@@ -150,11 +150,11 @@
 
           <p>
 
-            摘要:&nbsp;&nbsp;&nbsp;&nbsp;{{ new_detail.digest }}
+{#            摘要:&nbsp;&nbsp;&nbsp;&nbsp;{{ new_detail.digest }}#}
           </p>
           <p>更新内容：</p>
 <pre>
-{{ new_detail.content }}
+{#{{ new_detail.content }}#}
 </pre>
           
           下载<hr>
