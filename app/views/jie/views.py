@@ -51,9 +51,9 @@ def add():
             db.session.add(dtil)
             db.session.commit()
 
-            return "验证码成功, 将数据提交到数据库中"
+            return redirect("/index")
 
-    return "验证码错误"
+    return redirect("/add.html")
 
 
 # 编辑
