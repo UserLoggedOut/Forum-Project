@@ -1,3 +1,5 @@
+import time
+
 from flask import render_template, request, redirect, url_for, jsonify
 
 from app import db
@@ -12,19 +14,21 @@ def reg(jsoify=None):
     if request.method == "GET":
         return render_template("user/reg.html")
     elif request.method == "POST":
+        localtime = time.asctime(time.localtime(time.time()))
+        create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         email = request.form.get("email")
         username = request.form.get("username")
         password = request.form.get("pass")
         repass = request.form.get("repass")
         vercode = request.form.get("vercode")
-        print(email,username, password, repass, vercode)
+        print(email, username, password, repass, vercode)
 
         # 判断
         if password != repass:
 
             ret = {
-                "errno":1001,
-                "errmsg":"两次密码不相同"
+                "errno": 1001,
+                "errmsg": "两次密码不相同"
             }
             
             return jsonify(ret)
@@ -35,6 +39,7 @@ def reg(jsoify=None):
             user.email = email
             user.user_name = username
             user.password_hash = password
+            user.create_time = create_time
             db.session.add(user)
             db.session.commit()
             return "注册成功"
