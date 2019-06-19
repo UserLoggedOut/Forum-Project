@@ -11,7 +11,7 @@ from . import user_blu
 
 # 注册
 @user_blu.route("/reg", methods=["GET", "POST"])
-def reg(jsoify=None):
+def reg():
     if request.method == "GET":
         session["num1"] = random.randint(0, 9)
         session["num2"] = random.randint(0, 9)
@@ -28,27 +28,31 @@ def reg(jsoify=None):
         print(email, username, password, repass, vercode)
         print(ss, '-----人类验证码')
 
+        # session 存
+
         # 判断
-
-        if password != repass:
-            ret = {
-                "errno": 1001,
-                "errmsg": "两次密码不相同"
-            }
-
-            return jsonify(ret)
+        #
+        # if password != repass:
+        #     ret = {
+        #         "errno": 1001,
+        #         "errmsg": "两次密码不相同"
+        #     }
+        #
+        #     return jsonify(ret)
 
         # 数据库添加
         if int(vercode) == int(ss):
             user = User()
             if user:
+                # 用户注册成功
                 user.email = email
                 user.user_name = username
                 user.password_hash = password
                 user.create_time = create_time
                 db.session.add(user)
                 db.session.commit()
-                return "注册成功"
+                # 2 重定向到index
+                return redirect("/login")
 
             return "Aa"
         return "验证码错误"
@@ -64,14 +68,34 @@ def login():
         # 1 获取数据
         email = request.form.get("email")  # 邮箱
         password = request.form.get("password")
+
         print(email, password)
+
         # 2 数据库查询
         user_info = db.session.query(User).filter(User.email == email, User.password_hash == password).first()
 
         if user_info:
-            print(user_info)
-            return "aa"
+            # 如果验证用户登录成功
+
+            # 1 通过session存储用户的信息
+            session["user_id"] = user_info.id
+
+            # 2 js 异常 使用重定向到index主义
+            return redirect("/index")
+
+        # 如果用户未登录成功再次跳转到登录页面
         return redirect("/login")
+
+
+# 退出
+@user_blu.route("/logout")
+def logout():
+    # 退出清除session 标记
+    session.clear()
+    print("退出清除session成功")
+
+    # 2 返回主页
+    return redirect("/index")
 
 
 # 忘记密码
