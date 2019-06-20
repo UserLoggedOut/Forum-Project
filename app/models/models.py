@@ -20,11 +20,10 @@ class Detail(db.Model):
         news_dict = {
             "id": self.id,
             "title": self.title,
-            "source": self.source,
-            "digest": self.digest,
             "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "index_image_url": self.index_image_url,
             "clicks": self.clicks
+
         }
         return news_dict
 
@@ -57,4 +56,27 @@ class User(db.Model):
 
         return ret
 
+
+#  评论类
+class Comment(db.Model):
+    __tablename__ = 'comment'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)  # 评论者id
+    detail_id = db.Column(db.Integer, db.ForeignKey("detail.id"), nullable=False)  # 被评论id
+    content = db.Column(db.Text, nullable=False)  # 品论内容
+    create_time = db.Column(db.DateTime, default=datetime.now)  # 记录创建的时间
+    parent_id = db.Column(db.Integer, db.ForeignKey("comment.id"))  # 父品论id
+    parent = db.relationship("Comment", remote_side=id)  # 自关联
+
+    def to_basic_dict(self):
+        ret = {
+            'id': self.id,
+            'user_id': self.user_id,
+            'detail_id': self.detail_id,
+            'user_avatar_url': self.user.avatar_url,  # 用户头像
+            'user_name': self.user.user_name,  # 用户名
+            'create_time': self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            'prent': self.prent.to_basic_dict()if self.parent else None,
+        }
+        return ret
 
