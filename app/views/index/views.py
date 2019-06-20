@@ -1,7 +1,7 @@
-from flask import render_template, session
+from flask import render_template, session, request
 
 from app import db
-from app.models.models import Detail, User
+from app.models.models import Detail, User, Comment
 from . import index_blu
 
 
@@ -42,13 +42,13 @@ def details(new_id):
     #  1 数据库与url传参对比
     new_detail = db.session.query(Detail).filter(Detail.id == new_id).first()
     rank_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(8)  # 从detail数据表中查询点击最高的6个数据
-    print(new_detail, "Detail对象")
+    # print(new_detail, "Detail对象")
 
     user_info2 = session.get("user_id")
-    print(user_info2, "user_info2， 当前登陆者到id")
+    # print(user_info2, "user_info2， 当前登陆者到id")
     # 用户
     user = db.session.query(User).filter(User.id == user_info2).first()
-    print("detail", user)
+    # print("detail", user)
 
     # session 存储用户发布帖子对应的id
     session["detail_id"] = new_detail.user_id
