@@ -1,11 +1,12 @@
+import hashlib
+import os
 import random
 import time
 
-from flask import render_template, request, redirect, url_for, jsonify, session
+from flask import render_template, request, redirect, session, current_app, jsonify
 
 from app import db
 from app.models.models import User
-from app.utils.common.common import login_user_data
 
 from . import user_blu
 
@@ -103,6 +104,7 @@ def home():
 # 用户中心
 @user_blu.route("/index")
 def index():
+    user = db.session.query
     return render_template("user/index.html")
 
 
@@ -140,12 +142,32 @@ def set():
         return "修改成功"
 
 
-@user_blu.route("/upload/", methods=["POST"])
+@user_blu.route("/user/upload/", methods=["POST"])
 def upload():
+    # 获取登录用户的id
+    user_id = session.get("user_id")
+    # # 从数据库中查询这个用户
+    user = db.session.query(User).filter(User.id == user_id).first()
+    # return render_template("user/set.html", user=user)
     # 1.获取信息
-    binary = request.files.get("binary")
-    print(binary)
-    return "1234"
+    file = request.files.get("file")
+    print(file)
+    # 2.判断
+    if file:
+        file_hash = hashlib.md5()
+        file_hash.update(file.filename.encode("utf-8"))
+        file_name = file_hash.hexdigest() + file.filename[file.filename.rfind("."):]
+        local_file_path = os.path.join("/static/upload/images", file_name)
+
+        file_path = os.path.join(current_app.root_path, "static/upload/images", file_name)
+
+        file.save(file_path)
+
+        user.avatar_url = local_file_path
+        db.session.commit()
+        return "成功"
+    else:
+        return "出错了"
 
 
 # 我的消息

@@ -1,8 +1,7 @@
-from flask import render_template, request, session, g
+from flask import render_template, session
 
 from app import db
 from app.models.models import Detail, User
-from app.utils.common.common import login_user_data
 from . import index_blu
 
 
