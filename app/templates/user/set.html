@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,25 +27,30 @@
         <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
       </li>
     </ul>
-    
-    <ul class="layui-nav fly-nav-user">
+    {% if user %}
+        <ul class="layui-nav fly-nav-user">
       <!-- 登入后的状态 -->
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="javascript:;">
-          <cite class="layui-hide-xs">贤心</cite>
+          <cite class="layui-hide-xs">{{ user.user_name }}</cite>
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
+            {% if user.id == 2 %}
           <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+            {% endif %}
+          <img src="{{ user.avatar_url }}">
         </a>
         <dl class="layui-nav-child">
           <dd><a href="../user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
           <dd><a href="../user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
           <dd><a href="../user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
-          <dd><a href="" style="text-align: center;">退出</a></dd>
+          <dd><a href="{{ url_for(".logout") }}" style="text-align: center;">退出</a></dd>
         </dl>
       </li>
     </ul>
+
+    {% endif %}
+
   </div>
 </div>
 
@@ -82,13 +86,13 @@
     <i class="layui-icon">&#xe602;</i>
   </div>
   <div class="site-mobile-shade"></div>
-  
+
   <div class="site-tree-mobile layui-hide">
     <i class="layui-icon">&#xe602;</i>
   </div>
   <div class="site-mobile-shade"></div>
-  
-  
+
+
   <div class="fly-panel fly-panel-user" pad20>
     <div class="layui-tab layui-tab-brief" lay-filter="user">
       <ul class="layui-tab-title" id="LAY_mine">
@@ -103,19 +107,24 @@
             <div class="layui-form-item">
               <label for="L_email" class="layui-form-label">邮箱</label>
               <div class="layui-input-inline">
-                <input type="text" id="L_email" name="email" required lay-verify="email" autocomplete="off" value="" class="layui-input">
+                <input type="text" id="L_email" name="email" required lay-verify="email" autocomplete="off" value="{{ user.email }}" class="layui-input">
               </div>
               <div class="layui-form-mid layui-word-aux">如果您在邮箱已激活的情况下，变更了邮箱，需<a href="activate" style="font-size: 12px; color: #4f99cf;">重新验证邮箱</a>。</div>
             </div>
             <div class="layui-form-item">
               <label for="L_username" class="layui-form-label">昵称</label>
               <div class="layui-input-inline">
-                <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off" value="" class="layui-input">
+                <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off" value="{{ user.user_name }}" class="layui-input">
               </div>
               <div class="layui-inline">
                 <div class="layui-input-inline">
-                  <input type="radio" name="sex" value="0" checked title="男">
-                  <input type="radio" name="sex" value="1" title="女">
+                    {% if user.gender == "MAN" %}
+                  <input type="radio" name="sex" value="MAN" checked title="男">
+                  <input type="radio" name="sex" value="WOMAN" title="女">
+                    {% else %}
+                    <input type="radio" name="sex" value="MAN" title="男">
+                  <input type="radio" name="sex" value="WOMAN" checked title="女">
+                    {% endif %}
                 </div>
               </div>
             </div>
@@ -128,14 +137,18 @@
             <div class="layui-form-item layui-form-text">
               <label for="L_sign" class="layui-form-label">签名</label>
               <div class="layui-input-block">
-                <textarea placeholder="随便写些什么刷下存在感" id="L_sign"  name="sign" autocomplete="off" class="layui-textarea" style="height: 80px;"></textarea>
+                  {% if user.signature %}
+                <textarea placeholder="{{ user.signature }}" id="L_sign"  name="sign" autocomplete="off" class="layui-textarea" style="height: 80px;"></textarea>
+                  {% else %}
+                <textarea placeholder="{{ user.signature }}" id="L_sign"  name="sign" autocomplete="off" class="layui-textarea" style="height: 80px;"></textarea>
+                  {% endif %}
               </div>
             </div>
             <div class="layui-form-item">
               <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
             </div>
           </div>
-          
+
           <div class="layui-form layui-form-pane layui-tab-item">
             <div class="layui-form-item">
               <div class="avatar-add">
@@ -148,7 +161,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="layui-form layui-form-pane layui-tab-item">
             <form action="/user/repass" method="post">
               <div class="layui-form-item">
@@ -171,18 +184,18 @@
                 </div>
               </div>
               <div class="layui-form-item">
-                <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+                <button class="layui-btn" key="set-mine" type="submit">确认修改</button>
               </div>
             </form>
           </div>
-          
+
           <div class="layui-form layui-form-pane layui-tab-item">
             <ul class="app-bind">
               <li class="fly-msg app-havebind">
                 <i class="iconfont icon-qq"></i>
                 <span>已成功绑定，您可以使用QQ帐号直接登录Fly社区，当然，您也可以</span>
                 <a href="javascript:;" class="acc-unbind" type="qq_id">解除绑定</a>
-                
+
                 <!-- <a href="" onclick="layer.msg('正在绑定微博QQ', {icon:16, shade: 0.1, time:0})" class="acc-bind" type="qq_id">立即绑定</a>
                 <span>，即可使用QQ帐号登录Fly社区</span> -->
               </li>
@@ -190,7 +203,7 @@
                 <i class="iconfont icon-weibo"></i>
                 <!-- <span>已成功绑定，您可以使用微博直接登录Fly社区，当然，您也可以</span>
                 <a href="javascript:;" class="acc-unbind" type="weibo_id">解除绑定</a> -->
-                
+
                 <a href="" class="acc-weibo" type="weibo_id"  onclick="layer.msg('正在绑定微博', {icon:16, shade: 0.1, time:0})" >立即绑定</a>
                 <span>，即可使用微博帐号登录Fly社区</span>
               </li>
@@ -218,13 +231,13 @@ layui.cache.page = 'user';
 layui.cache.user = {
   username: '游客'
   ,uid: -1
-  ,avatar: '../../res/images/avatar/00.jpg'
+  ,avatar: '../../static/images/avatar/00.jpg'
   ,experience: 83
   ,sex: '男'
 };
 layui.config({
   version: "2.0.0"
-  ,base: '../../res/mods/'
+  ,base: '../../static/mods/'
 }).extend({
   fly: 'index'
 }).use('fly');

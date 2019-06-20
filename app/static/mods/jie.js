@@ -108,10 +108,10 @@ layui.define('fly', function(exports){
       fly.json('/collection/'+ type +'/', {
         cid: div.data('id')
       }, function(res){
-        if(type === 'edit.html'){
+        if(type === 'add'){
           othis.data('type', 'remove').html('取消收藏').addClass('layui-btn-danger');
         } else if(type === 'remove'){
-          othis.data('type', 'edit.html').html('收藏').removeClass('layui-btn-danger');
+          othis.data('type', 'add').html('收藏').removeClass('layui-btn-danger');
         }
       });
     }
@@ -130,7 +130,7 @@ layui.define('fly', function(exports){
       fly.json('/collection/find/', {
         cid: div.data('id')
       }, function(res){
-        jieAdmin.append('<span class="layui-btn layui-btn-xs jie-admin '+ (res.data.collection ? 'layui-btn-danger' : '') +'" type="collect" data-type="'+ (res.data.collection ? 'remove' : 'edit.html') +'">'+ (res.data.collection ? '取消收藏' : '收藏') +'</span>');
+        jieAdmin.append('<span class="layui-btn layui-btn-xs jie-admin '+ (res.data.collection ? 'layui-btn-danger' : '') +'" type="collect" data-type="'+ (res.data.collection ? 'remove' : 'add') +'">'+ (res.data.collection ? '取消收藏' : '收藏') +'</span>');
       });
     }
   }();
