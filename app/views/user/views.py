@@ -25,10 +25,9 @@ def reg():
         repass = request.form.get("repass")
         vercode = request.form.get("vercode")
         ss = session.get("num1") + session.get("num2")
-        # print(email, username, password, repass, vercode)
-        # print(ss, '-----人类验证码')
-        print(type(email), email)
-        # 判断
+        print(email, username, password, repass, vercode)
+        print(ss, '-----人类验证码')
+        # 查询用户注册的邮箱是否存在
         user = db.session.query(User).filter(User.email == email).first()
         print(user, "通过邮箱查找出相同用户")
         if len(password) >= 6:
@@ -66,34 +65,28 @@ def reg():
 @user_blu.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        session["n1"] = random.randint(0, 9)
-        session["n2"] = random.randint(0, 9)
         return render_template("user/login.html")
 
     elif request.method == "POST":
         # 1 获取数据
         email = request.form.get("email")  # 邮箱
         password = request.form.get("password")
-        vercode = request.form.get("vercode")
-        ss = session.get("n1") + session.get("n2")
-        print(email, password, vercode, ss)
-        if int(vercode) == int(ss):
-            # 2 数据库查询
-            user_info = db.session.query(User).filter(User.email == email, User.password_hash == password).first()
-            if user_info:
-                # 如果验证用户登录成功
-                # 1 通过session存储用户的信息
-                session["user_id"] = user_info.id
+        print(email, password)
+        # 2 数据库查询
+        user_info = db.session.query(User).filter(User.email == email, User.password_hash == password).first()
+        if user_info:
+            # 如果验证用户登录成功
+            # 1 通过session存储用户的信息
+            session["user_id"] = user_info.id
+            # 2 使用重定向到index主义
+            return redirect("/index")
+        # 如果用户未登录成功再次跳转到登录页面
+        return redirect("/login")
 
-                # 2 js 异常 使用重定向到index主义
-                return redirect("/index")
-
-            # 如果用户未登录成功再次跳转到登录页面
-            return redirect("/login")
-        return "人机验证码错误"
 
 # 退出
 @user_blu.route("/logout")
+# @login_user_data
 def logout():
     # 退出清除session 标记
     session.clear()
@@ -107,44 +100,49 @@ def logout():
 @user_blu.route("/forget", methods=["POST", "GET"])
 def forget():
     if request.method == "GET":
+        session["n1"] = random.randint(0, 9)
+        session["n2"] = random.randint(0, 9)
         return render_template("user/forget.html")
     elif request.method == "POST":
         # 1 获取参数
         email = request.form.get("email")
+        vercode = request.form.get("vercode")
+        ss = session.get("n1") + session.get("n2")
         print(email)
         # 数据库查询
         user_email = db.session.query(User).filter(User.email == email).first()
         print(user_email, "查询用户的email是否有对应")
-        if user_email:
-            # 如果查询到了用户输入的邮箱与查询出来的邮箱成立就执行下面的事情
+        if int(vercode) == int(ss):
+            if user_email:
+                # 如果查询到了用户输入的邮箱与查询出来的邮箱成立就执行下面的事情
 
-            # 1 通过session存储email
-            session["user_email"] = user_email.email  # 邮箱
+                # 1 通过session存储email
+                session["user_email"] = user_email.email  # 邮箱
 
-            email_user = session.get("user_email")
-            print(email_user, "email_user")
+                email_user = session.get("user_email")
+                print(email_user, "email_user")
 
-            # 2 邮箱验证
-            # 通过hashlib相关功能得到一个随机值，这个 随机值出现可能性的概率几乎为0
-            mail_hash = hashlib.md5()
-            mail_hash.update(str(time.time()).encode("utf-8"))
-            email_hash_value = mail_hash.hexdigest()
+                # 2 邮箱验证
+                # 通过hashlib相关功能得到一个随机值，这个 随机值出现可能性的概率几乎为0
+                mail_hash = hashlib.md5()
+                mail_hash.update(str(time.time()).encode("utf-8"))
+                email_hash_value = mail_hash.hexdigest()
 
-            # 制作一个url，用来发送到电子邮箱中，从而才能让用户点击
-            # http://localhost:5000/verify_email?email_hash=aksdjflasjdflkjaskldfjlasdjflksjdf
-            verify_email_url = request.host_url + "forget3?user_email=" + email_user
+                # 制作一个url，用来发送到电子邮箱中，从而才能让用户点击
+                # http://localhost:5000/verify_email?email_hash=aksdjflasjdflkjaskldfjlasdjflksjdf
+                verify_email_url = request.host_url + "forget3?user_email=" + email_user
 
-            # sender发信人  recipients收信人
-            msg = Message('欢迎来到Fly社区，请验证', sender='13030119817@163.com', recipients=[email])
-            msg.body = '你好'
-            msg.html = "你好，点击<a href=%s >修改密码</a>, 如有问题请联系Fly社区管理员" % verify_email_url
-            mail.send(msg)
+                # sender发信人  recipients收信人
+                msg = Message('欢迎来到Fly社区，请验证', sender='13030119817@163.com', recipients=[email])
+                msg.body = '你好'
+                msg.html = "你好，点击<a href=%s >修改密码</a>, 如有问题请联系Fly社区管理员" % verify_email_url
+                mail.send(msg)
 
-            # 返回
-            return "邮箱验证发送成功点击<a href=https://mail.163.com/>登录</a>邮箱验证"
-
-        else:
-            return "邮箱不存在"
+                # 返回
+                return "邮箱验证发送成功点击<a href=https://mail.163.com/>登录</a>邮箱验证"
+            else:
+                return "邮箱不存在"
+        return "验证码错误"
 
 
 @user_blu.route("/forget3", methods=["POST", "GET"])
