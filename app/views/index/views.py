@@ -18,10 +18,21 @@ def index():
     # user_info = g.user.id
     print(user_info, "User中登录的数据")
 
+    # 3 分页
+    page = request.args.get("page", 1)
+    # 数据库查询
+    paginate = db.session.query(Detail).paginate(int(page), 2, False)
+    print(paginate)
+
+    # 4 user数据
+    details = [x.dict_detail() for x in paginate.items]
+    print("存储用户里面的所有列表打印", details)
+
     # 3 再次数据库查询User整个数据
     user = db.session.query(User).filter(User.id == user_info).first()
-    user_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(8)    # 主页面
-    return render_template("index.html", user=user, user_detail=user_detail)
+    user_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(10)    # 主页面
+    return render_template("index.html", user=user, user_detail=user_detail,
+                           paginate=paginate, details=details)
 
 
 @index_blu.route("/detail/<int:new_id>")
