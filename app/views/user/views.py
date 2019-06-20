@@ -1,10 +1,11 @@
 
 import hashlib
+import os
 from flask_mail import Mail,Message
 import random
 import time
 
-from flask import render_template, request, redirect, url_for, jsonify, session
+from flask import render_template, request, redirect, url_for, jsonify, session, current_app
 
 from app import db
 from app.models.models import User
@@ -189,9 +190,69 @@ def index():
 
 
 # 基本设置
-@user_blu.route("/set")
+@user_blu.route("/set", methods=["GET", "POST"])
 def set():
-    return render_template("user/set.html")
+    # 1.获取用户id
+    user_id = session.get("user_id")
+    # 2.查询数据库
+    user = db.session.query(User).filter(User.id == user_id).first()
+    if request.method == "GET":
+        return render_template("user/set.html", user=user)
+    elif request.method == "POST":
+        # 获取信息
+        email = request.form.get("email")
+        username = request.form.get("username")
+        sex = request.form.get("sex")
+        # city = request.form.get("city")
+        sign = request.form.get("sign")
+        nowpass = request.form.get("nowpass")
+        passs = request.form.get("pass")
+        repass = request.form.get("repass")
+        if email:
+            # 修改用户信息
+            user.email = email
+            user.user_name = username
+            user.gender = sex
+            user.signature = sign
+
+        if user.password_hash == nowpass:
+            if passs == repass:
+                user.password_hash = passs
+        # 提交信息
+        db.session.commit()
+        return "修改成功"
+
+
+@user_blu.route("/upload/", methods=["POST"])
+@user_blu.route("/user/upload/", methods=["POST"])
+def upload():
+    # 获取登录用户的id
+    user_id = session.get("user_id")
+    # # 从数据库中查询这个用户
+    user = db.session.query(User).filter(User.id == user_id).first()
+    # return render_template("user/set.html", user=user)
+    # 1.获取信息
+    binary = request.files.get("binary")
+    print(binary)
+    # return "1234"
+    file = request.files.get("file")
+    print(file)
+    # 2.判断
+    if file:
+        file_hash = hashlib.md5()
+        file_hash.update(file.filename.encode("utf-8"))
+        file_name = file_hash.hexdigest() + file.filename[file.filename.rfind("."):]
+        local_file_path = os.path.join("/static/upload/images", file_name)
+
+        file_path = os.path.join(current_app.root_path, "static/upload/images", file_name)
+
+        file.save(file_path)
+
+        user.avatar_url = local_file_path
+        db.session.commit()
+        return "成功"
+    else:
+        return "出错了"
 
 
 # 我的消息

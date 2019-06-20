@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 
 from config import APPCONFIG
@@ -6,6 +7,8 @@ from config import APPCONFIG
 # from config import DevelopmentConfig
 
 db = SQLAlchemy()  # 创建SQLAlchemy对象时可以直接创建，后面再与flask对象进行关联
+
+email = Mail()  # 邮箱对象
 
 
 def create_app(config_name):
@@ -29,6 +32,12 @@ def create_app(config_name):
     # 创建一个SQLAlchemy对象
     # db = )SQLAlchemy(app  # 创建SQLAlchemy对象的时候，它需要flask应用的对象，所以此时我们就可以将flask对象当做实参进行传递
     db.init_app(app)  # 如果事前SQLAlchemy对象没有进行与flask对象关联，那么此时可以完善这个操作
+
+    email.init_app(app)  # 关联对象
+
+    @app.errorhandler(404)
+    def erro_404(e):
+        return "404"
 
     return app
 

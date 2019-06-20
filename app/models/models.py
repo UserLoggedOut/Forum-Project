@@ -20,10 +20,11 @@ class Detail(db.Model):
         news_dict = {
             "id": self.id,
             "title": self.title,
-            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "create_time": self.create_time.strftime("%Y-%m-%d"),
             "index_image_url": self.index_image_url,
-            "clicks": self.clicks
-
+            "clicks": self.clicks,
+            "user_name":self.user.user_name,
+            "user_id": self.user.id
         }
         return news_dict
 
@@ -51,7 +52,9 @@ class User(db.Model):
         ret = {
             "id": self.id,
             "user_name": self.user_name,
-            "avatar_url": self.avatar_url
+            "avatar_url": self.avatar_url,
+            "create_time": self.create_time,
+            "signature":self.signature
         }
 
         return ret
