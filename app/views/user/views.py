@@ -4,7 +4,7 @@ import time
 from flask import render_template, request, redirect, url_for, jsonify, session
 
 from app import db
-from app.models.models import User
+from app.models.models import User, Detail
 from app.utils.common.common import login_user_data
 
 from . import user_blu
@@ -103,15 +103,28 @@ def home():
 
 
 # 用户中心
-@user_blu.route("/index")
+@user_blu.route("/user/index")
 def index():
-    return render_template("user/index.html")
+    user_id = session.get("user_id")
+    print(user_id)
+    detail = db.session.query(Detail).filter(Detail.user_id == user_id).all()
+    num = len(detail)
+    print(detail)
+    return render_template("user/index.html", detail=detail, num=num)
 
 
 # 基本设置
 @user_blu.route("/set")
 def set():
     return render_template("user/set.html")
+
+
+# 头像设置
+@user_blu.route("/upload/", methods=["POST"])
+def upload():
+    file = request.files.get("file")
+    print(file)
+    return "12341234"
 
 
 # 我的消息

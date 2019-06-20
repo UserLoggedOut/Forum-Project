@@ -97,21 +97,21 @@
     -->
     <div class="layui-tab layui-tab-brief" lay-filter="user">
       <ul class="layui-tab-title" id="LAY_mine">
-        <li data-type="mine-jie" lay-id="index" class="layui-this">我发的帖（<span>89</span>）</li>
+        <li data-type="mine-jie" lay-id="index" class="layui-this">我发的帖（<span>{{ num }}</span>）</li>
         <li data-type="collection" data-url="/collection/find/" lay-id="collection">我收藏的帖（<span>16</span>）</li>
       </ul>
       <div class="layui-tab-content" style="padding: 20px 0;">
         <div class="layui-tab-item layui-show">
+        {% for x in detail %}
           <ul class="mine-view jie-row">
-            {% for x in aaa %}
             <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">{{ x.title }}</a>
+              <a class="jie-title" href="../detail/{{ x.id }}" target="_blank">{{ x.title }}</a>
               <i>{{ x.create_time }}</i>
               <a class="mine-edit" href="/jie/edit/{{ x.id }}">编辑</a>
               <em>661阅/10答</em>
             </li>
-            {% endfor %}
           </ul>
+        {% endfor %}
           <div id="LAY_page"></div>
         </div>
         <div class="layui-tab-item">
@@ -142,13 +142,13 @@ layui.cache.page = 'user';
 layui.cache.user = {
   username: '游客'
   ,uid: -1
-  ,avatar: '../../res/images/avatar/00.jpg'
+  ,avatar: '../../static/images/avatar/00.jpg'
   ,experience: 83
   ,sex: '男'
 };
 layui.config({
   version: "3.0.0"
-  ,base: '../../res/mods/'
+  ,base: '../../static/mods/'
 }).extend({
   fly: 'index'
 }).use('fly');
