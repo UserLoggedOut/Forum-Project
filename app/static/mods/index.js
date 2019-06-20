@@ -468,8 +468,8 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     fly.json('/top/reply/', {
       limit: 20
     }, function(static){
-      var templates = laytpl(tplReply).render(static);
-      elemReply.find('dl').templates(templates);
+      var html = laytpl(tplReply).render(static);
+      elemReply.find('dl').html(html);
     });
     */
   };
@@ -613,7 +613,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     ,click: function(type){
       if(type === 'bar1'){
         layer.msg('打开 index.js，开启发表新帖的路径');
-        //location.href = 'jie/add.templates';
+        //location.href = 'jie/add.html';
       }
     }
   });

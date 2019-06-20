@@ -24,8 +24,7 @@ def create_app(config_name):
     app.register_blueprint(index_blu)
     app.register_blueprint(jie_blu, url_prefix="/jie")
     app.register_blueprint(detail_blu)
-    app.register_blueprint(user_blu, url_prefix="/user")
-
+    app.register_blueprint(user_blu)
 
     # 创建一个SQLAlchemy对象
     # db = )SQLAlchemy(app  # 创建SQLAlchemy对象的时候，它需要flask应用的对象，所以此时我们就可以将flask对象当做实参进行传递

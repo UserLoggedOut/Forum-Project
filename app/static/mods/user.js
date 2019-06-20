@@ -319,8 +319,8 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
     
     /*
     fly.json('/message/find/', {}, function(static){
-      var templates = laytpl(tpl).render(static);
-      dom.minemsg.templates(templates);
+      var html = laytpl(tpl).render(static);
+      dom.minemsg.html(html);
       if(static.rows.length > 0){
         delAll.removeClass('layui-hide');
       }

@@ -1,3 +1,5 @@
+import random
+
 from app import db
 from app.models.models import Detail
 from . import detail_blu
@@ -13,9 +15,8 @@ def add_detail(news_id):
     print(detail_id)
 
     if request.method == "GET":
-        # print("aaaa")
-        # detail_id = session.get("detail_id")
-        # print(detail_id, "session 存储的数据")
+        # session["number1"] = random.randint(0, 9)
+        # session["number2"] = random.randint(0, 9)
         return render_template("jie/add.html", detail_id=detail_id)
 
     elif request.method == "POST":
@@ -23,6 +24,7 @@ def add_detail(news_id):
         content = request.form.get("content")  # 编辑内容
 
         print(title, content, "333")
+        # ss = session.get("number1") + session.get("number2")
 
         # 数据库修改
         detail_id.title = title  # 标题
