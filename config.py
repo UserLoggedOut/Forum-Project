@@ -15,6 +15,15 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:python@localhost:3306/new_flask4?charset=utf8'
 
+    # 下面是SMTP服务器配置
+
+    MAIL_SERVER = 'smtp.163.com'  # 电子邮件服务器的主机名或IP地址
+    MAIL_PORT = 25  # 电子邮件服务器的端口
+    MAIL_USE_TLS = True  # 启用传输层安全
+    # 注意这里启用的是TLS协议(transport layer security)，而不是SSL协议所以用的是25号端口
+    MAIL_USERNAME = '13030119817@163.com'  # 你的邮件账户用户名
+    MAIL_PASSWORD = 'python12'  # 邮件账户的密码,这个密码是指的授权码!授权码!授权码!
+
 
 class ProductionConfig(Config):
     """生产环境(线上)中配置类"""
