@@ -57,8 +57,8 @@
         </a>
         <dl class="layui-nav-child">
           <dd><a href="{{ url_for("user_blu.set") }}"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="user/message.templates"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="user/home.templates"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="{{ url_for("user_blu.message") }}"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="{{ url_for("user_blu.home") }}"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
           <dd><a href="{{ url_for("user_blu.logout") }}" style="text-align: center;">退出</a></dd>
         </dl>
@@ -101,7 +101,7 @@
     <div class="layui-col-md8">
       <div class="fly-panel">
         <div class="fly-panel-title fly-filter">
-          <a>置顶</a>
+          <a>最新发布</a>
           <a href="#signin" class="layui-hide-sm layui-show-xs-block fly-right" id="LAY_goSignin" style="color: #FF5722;">去签到</a>
         </div>
         <ul class="fly-list">
@@ -111,7 +111,7 @@
               <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
             </a>
             <h2>
-              <a class="layui-badge">动态</a>
+              <a class="layui-badge">最新动态</a>
               <a href="/detail/{{ detail.id}}">{{ detail.get("title") }}</a>
             </h2>
             <div class="fly-list-info">

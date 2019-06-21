@@ -8,7 +8,7 @@ import time
 from flask import render_template, request, redirect, url_for, jsonify, session, current_app, g
 
 from app import db
-from app.models.models import User, Detail
+from app.models.models import User, Detail, Comment
 from app.utils.common.common import login_user_data
 from 测试发送email import mail
 
@@ -194,8 +194,19 @@ def forget_pwd4():
 @user_blu.route("/home")
 @login_user_data
 def home():
-
-    return render_template("user/home.html", user=g.user)
+    try:
+        ss = db.session.query(Detail).filter(Detail.user_id == g.user.id).first()
+        # print(ss, '-----发布帖子的id', g.user.id)
+        reply_s = db.session.query(Comment).filter(Comment.detail_id == ss.id).all()
+        # print(len(reply_s), '--------回帖人数')
+        issue = db.session.query(Detail).filter(Detail.user_id == g.user.id).all()
+        # print(issue, '----当前id所发布的所用帖子')
+        user_answer = db.session.query(Comment).filter(Comment.user_id == g.user.id).all()
+        print(user_answer, '-------------当前用户回复表的id')
+        return render_template("user/home.html", user=g.user, reply_s=len(reply_s), issue=issue, user_answer=user_answer)
+    except Exception as re:
+        # return render_template("user/home.html", user=g.user, user_answer=user_answer)
+        return "xxxxxxxxxxxxx"
 
 
 # 用户中心
