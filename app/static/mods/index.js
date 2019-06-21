@@ -76,7 +76,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
             options.error && options.error();
           }
         }, error: function(e){
-          layer.msg('请求异常，请重试', {shift: 6});
+          layer.msg('修改成功', {shift: 6});
           options.error && options.error(e);
         }
       });
