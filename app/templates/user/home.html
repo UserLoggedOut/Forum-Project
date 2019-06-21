@@ -29,38 +29,52 @@
       </li>
     </ul>
     
-    <ul class="layui-nav fly-nav-user">
+    {% if user %}
+        <ul class="layui-nav fly-nav-user">
       <!-- 登入后的状态 -->
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="javascript:;">
           <cite class="layui-hide-xs">{{ user.user_name }}</cite>
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
+            {% if user.id == 2 %}
           <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="{{ user.avatar_url }}">
+            {% endif %}
+           {% if user.avatar_url %}
+            <img src="{{ user.avatar_url }}">
+            {% else %}
+                <img src="../../static/images/avatar/5.jpg">
+            {% endif %}
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="../user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="../user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="../user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="{{ url_for("user_blu.set") }}"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a href="{{ url_for("user_blu.message") }}"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="{{ url_for("user_blu.home") }}"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
-          <dd><a href="" style="text-align: center;">退出</a></dd>
+          <dd><a href="{{ url_for("user_blu.logout") }}" style="text-align: center;">退出</a></dd>
         </dl>
       </li>
     </ul>
+
+    {% endif %}
   </div>
 </div>
 
 <div class="fly-home fly-panel" style="background-image: url();">
-  <img src="{{ user.avatar_url }}" alt="{{ user.user_name }}">
+{% if user.avatar_url %}
+     <img src="{{ user.avatar_url }}" alt="贤心">
+{% else %}
+    <img src="../../static/images/avatar/5.jpg">
+
+{% endif %}
+
   <i class="iconfont icon-renzheng" title="Fly社区认证"></i>
   <h1>
     {{ user.user_name }}
-      {% if user.gender == "MAN" %}
     <i class="iconfont icon-nan"></i>
-      {% else %}
-    <i class="iconfont icon-nv"></i>
-      {% endif %}
+    <!-- <i class="iconfont icon-nv"></i>  -->
+      {% if user.id == 2 %}
     <i class="layui-badge fly-badge-vip">VIP3</i>
+      {% endif %}
     <!--
     <span style="color:#c00;">（管理员）</span>
     <span style="color:#5FB878;">（社区之光）</span>
@@ -68,23 +82,19 @@
     -->
   </h1>
 
-  <p style="padding: 10px 0; color: #5FB878;">认证信息：layui 作者</p>
+  <p style="padding: 10px 0; color: #5FB878;">认证信息:管理员</p>
 
   <p class="fly-home-info">
     <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">66666 飞吻</span>
-    <i class="iconfont icon-shijian"></i><span>{{ user.create_time }} 加入</span>
-    <i class="iconfont icon-chengshi"></i><span>来自杭州</span>
+    <i class="iconfont icon-shijian"></i><span>{{ user.create_time }}</span>
+    <i class="iconfont icon-chengshi"></i><span>来自{{ user.city }}</span>
   </p>
-    {% if user.signatura %}
-  <p class="fly-home-sign">（{{ user.signature }}）</p>
+    {% if user.signature %}
+    <p class="fly-home-sign">（{{ user.signature }}）</p>
     {% else %}
-  <p class="fly-home-sign">（这个家伙很懒，啥都没有写！）</p>
+    <p class="fly-home-sign">（这个用户很懒，什么也没有留下）</p>
     {% endif %}
 
-  <div class="fly-sns" data-user="">
-    <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
-    <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
-  </div>
 
 </div>
 

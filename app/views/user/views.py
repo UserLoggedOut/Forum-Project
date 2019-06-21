@@ -1,10 +1,16 @@
+
+import hashlib
+import os
+from flask_mail import Mail,Message
 import random
 import time
 
-from flask import render_template, request, redirect, url_for, jsonify, session
+from flask import render_template, request, redirect, url_for, jsonify, session, current_app, g
 
 from app import db
 from app.models.models import User, Detail
+from app.utils.common.common import login_user_data
+from 测试发送email import mail
 
 from . import user_blu
 
@@ -29,59 +35,59 @@ def reg():
         print(ss, '-----人类验证码')
         # 查询用户注册的邮箱是否存在
         user = db.session.query(User).filter(User.email == email).first()
-        print(user, "通过邮箱查找出相同用户")
-        if len(password) >= 6:
-            print('-----------1--------------------')
-            if password != repass:
-                ret = {
-                    "errno": 1001,
-                    "errmsg": "两次密码不相同"
-                }
-                return jsonify(ret)
-            else:
-                # 数据库添加
-                if int(vercode) == int(ss):
-                    user = User()
-                    if user:
-                        print('-----------2--------------------')
-                        # 用户注册成功
-                        try:
-                            user.email = email
-                            user.user_name = username
-                            user.password_hash = password
-                            user.create_time = create_time
-                            db.session.add(user)
-                            db.session.commit()
-                        except Exception as re:
-                            return "注册失败,邮箱已被注册"
-                        # 2 重定向到index
-                        return redirect("/login")
-                    return "Aa"
-                return "验证码错误，或邮箱以被注册"
-        return "密码格式不对"
+        if user:
+            return "用户名存在"
+
+        # 数据库添加
+        if int(vercode) == int(ss):
+            user = User()
+            if user:
+                # 用户注册成功
+                user.email = email
+                user.user_name = username
+                user.password_hash = password
+                user.create_time = create_time
+                db.session.add(user)
+                db.session.commit()
+                # 2 重定向到index
+                return redirect("/login")
+
+            return "Aa"
+        return "验证码错误"
 
 
 # 登录
 @user_blu.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
+        session["number1"] = random.randint(0, 9)
+        session["number2"] = random.randint(0, 9)
         return render_template("user/login.html")
 
     elif request.method == "POST":
         # 1 获取数据
         email = request.form.get("email")  # 邮箱
         password = request.form.get("password")
-        print(email, password)
-        # 2 数据库查询
-        user_info = db.session.query(User).filter(User.email == email, User.password_hash == password).first()
-        if user_info:
-            # 如果验证用户登录成功
-            # 1 通过session存储用户的信息
-            session["user_id"] = user_info.id
-            # 2 使用重定向到index主义
-            return redirect("/index")
-        # 如果用户未登录成功再次跳转到登录页面
-        return redirect("/login")
+        vercode = request.form.get("vercode")
+        ss = session.get("number1") + session.get("number2")
+
+        print(email, password, vercode)
+
+        if int(vercode) == int(ss):
+            # 2 数据库查询
+            user_info = db.session.query(User).filter(User.email == email, User.password_hash == password).first()
+
+            if user_info:
+                # 如果验证用户登录成功
+
+                # 1 通过session存储用户的信息
+                session["user_id"] = user_info.id
+
+                # 2 使用重定向到index主义
+                return redirect("/index")
+
+            # 如果用户未登录成功再次跳转到登录页面
+            return redirect("/login")
 
 
 # 退出
@@ -100,19 +106,19 @@ def logout():
 @user_blu.route("/forget", methods=["POST", "GET"])
 def forget():
     if request.method == "GET":
-        session["n1"] = random.randint(0, 9)
-        session["n2"] = random.randint(0, 9)
+        session["number1"] = random.randint(0, 9)
+        session["number2"] = random.randint(0, 9)
         return render_template("user/forget.html")
     elif request.method == "POST":
         # 1 获取参数
         email = request.form.get("email")
         vercode = request.form.get("vercode")
-        ss = session.get("n1") + session.get("n2")
+        ss = session.get("number1") + session.get("number2")
         print(email)
-        # 数据库查询
-        user_email = db.session.query(User).filter(User.email == email).first()
-        print(user_email, "查询用户的email是否有对应")
         if int(vercode) == int(ss):
+            # 数据库查询
+            user_email = db.session.query(User).filter(User.email == email).first()
+            print(user_email, "查询用户的email是否有对应")
             if user_email:
                 # 如果查询到了用户输入的邮箱与查询出来的邮箱成立就执行下面的事情
 
@@ -140,8 +146,10 @@ def forget():
 
                 # 返回
                 return "邮箱验证发送成功点击<a href=https://mail.163.com/>登录</a>邮箱验证"
+
             else:
                 return "邮箱不存在"
+
         return "验证码错误"
 
 
@@ -149,6 +157,7 @@ def forget():
 def forget3():
     """忘记密码"""
     if request.method == "GET":
+
         return render_template("user/forgetPwd3.html")
 
     elif request.method == "POST":
@@ -183,17 +192,22 @@ def forget_pwd4():
 
 # 主页
 @user_blu.route("/home")
+@login_user_data
 def home():
-    user_id = session.get("user_id")
-    user = db.session.query(User).filter(User.id == user_id).first()
-    return render_template("user/home.html", user=user)
+
+    return render_template("user/home.html", user=g.user)
 
 
 # 用户中心
-@user_blu.route("/index")
-def index():
-    aaa = db.session.query(Detail).all()
-    return render_template("user/index.html", aaa=aaa)
+@user_blu.route("/user_index")
+@login_user_data
+def user_index():
+    user_id = session.get("user_id")
+    print(user_id)
+    detail = db.session.query(Detail).filter(Detail.user_id == user_id).all()
+    num = len(detail)
+    print(detail)
+    return render_template("user/index.html", detail=detail, num=num, user=g.user)
 
 
 # 基本设置
@@ -210,7 +224,7 @@ def set():
         email = request.form.get("email")
         username = request.form.get("username")
         sex = request.form.get("sex")
-        # city = request.form.get("city")
+        city = request.form.get("city")
         sign = request.form.get("sign")
         nowpass = request.form.get("nowpass")
         passs = request.form.get("pass")
@@ -227,7 +241,8 @@ def set():
                 user.password_hash = passs
         # 提交信息
         db.session.commit()
-        return "修改成功"
+        # 修改成功跳转
+        return redirect("/home")
 
 
 @user_blu.route("/upload/", methods=["POST"])

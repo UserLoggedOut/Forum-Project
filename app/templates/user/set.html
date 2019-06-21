@@ -37,12 +37,16 @@
             {% if user.id == 2 %}
           <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
             {% endif %}
-          <img src="{{ user.avatar_url }}">
+           {% if user.avatar_url %}
+            <img src="{{ user.avatar_url }}">
+            {% else %}
+                <img src="../../static/images/avatar/5.jpg">
+            {% endif %}
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="../user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="../user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="../user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="{{ url_for("user_blu.set") }}"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a href="{{ url_for("user_blu.message") }}"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="{{ url_for("user_blu.home") }}"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
           <dd><a href="{{ url_for(".logout") }}" style="text-align: center;">退出</a></dd>
         </dl>
@@ -63,7 +67,7 @@
       </a>
     </li>
     <li class="layui-nav-item">
-      <a href="index">
+      <a href="/user_index">
         <i class="layui-icon">&#xe612;</i>
         用户中心
       </a>
@@ -72,12 +76,6 @@
       <a href="set">
         <i class="layui-icon">&#xe620;</i>
         基本设置
-      </a>
-    </li>
-    <li class="layui-nav-item">
-      <a href="message">
-        <i class="layui-icon">&#xe611;</i>
-        我的消息
       </a>
     </li>
   </ul>
@@ -99,7 +97,7 @@
         <li class="layui-this" lay-id="info">我的资料</li>
         <li lay-id="avatar">头像</li>
         <li lay-id="pass">密码</li>
-        <li lay-id="bind">帐号绑定</li>
+
       </ul>
       <div class="layui-tab-content" style="padding: 20px 0;">
         <div class="layui-form layui-form-pane layui-tab-item layui-show">
@@ -131,7 +129,7 @@
             <div class="layui-form-item">
               <label for="L_city" class="layui-form-label">城市</label>
               <div class="layui-input-inline">
-                <input type="text" id="L_city" name="city" autocomplete="off" value="" class="layui-input">
+                <input type="text" id="L_city" name="city" autocomplete="off" value="{{ user.city }}" class="layui-input">
               </div>
             </div>
             <div class="layui-form-item layui-form-text">
@@ -156,7 +154,11 @@
                 <button type="button" class="layui-btn upload-img">
                   <i class="layui-icon">&#xe67c;</i>上传头像
                 </button>
-                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+                  {% if user.avatar_url %}
+                <img src="{{ user.avatar_url }}">
+                   {% else %}
+                <img src="../../static/images/avatar/5.jpg">
+                  {% endif %}
                 <span class="loading"></span>
               </div>
             </div>
