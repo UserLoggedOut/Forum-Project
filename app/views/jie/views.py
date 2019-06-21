@@ -1,10 +1,11 @@
 import random
 
-from flask import render_template, request, session, redirect
+from flask import render_template, request, session, redirect, url_for, g
 
 import time
 from app import db
 from app.models.models import User, Detail, Comment
+from app.utils.common.common import login_user_data
 
 from app.views.jie import jie_blu
 
@@ -20,6 +21,7 @@ def detail():
 
 
 @jie_blu.route("/add.html", methods=["GET", "POST"])
+@login_user_data
 def add():
     user_id = session.get("user_id")
     print(user_id, "add下的user信息")
@@ -29,7 +31,7 @@ def add():
         session["number1"] = random.randint(0, 9)
         session["number2"] = random.randint(0, 9)
 
-        return render_template("jie/add.html")
+        return render_template("jie/add.html", user=g.user)
     elif request.method == "POST":
 
         localtime = time.asctime(time.localtime(time.time()))
@@ -52,7 +54,7 @@ def add():
             db.session.add(dtil)
             db.session.commit()
             # return "验证码成功, 将数据提交到数据库中"
-            return redirect("index")
+            return redirect("/index")
         return "验证码错误"
 
 
@@ -66,6 +68,11 @@ def edit(News_id):
 # 评论+回复
 @jie_blu.route("/reply/", methods=["POST"])
 def reply():
+    user = session.get("user_id")
+    if not user:
+        # 没有登录就不能评论,重定向到登录页面
+        return redirect("/login")
+
     # if request.method == "POST":
     user_info = session.get("user_id")  #
     print(user_info, "-=-=-=-=-=-=-=-=-=-=-当前登陆者 的 id")
@@ -86,4 +93,5 @@ def reply():
         db.session.commit()
     except Exception as re:
         return "评论失败"
-    return "评论成功"
+    # 评论成功返回
+    return redirect("/detail/{}".format(jid))

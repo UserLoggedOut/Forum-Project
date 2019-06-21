@@ -52,8 +52,14 @@
         <a class="fly-nav-avatar" href="javascript:;">
           <cite class="layui-hide-xs">{{ user.user_name }}</cite>
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
+            {% if user.id == 2 %}
           <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+            {% endif %}
+           {% if user.avatar_url %}
+            <img src="{{ user.avatar_url }}">
+            {% else %}
+                <img src="../../static/images/avatar/5.jpg">
+            {% endif %}
         </a>
         <dl class="layui-nav-child">
           <dd><a href="{{ url_for("user_blu.set") }}"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
@@ -72,17 +78,17 @@
   <div class="layui-container">
     <ul class="layui-clear">
       <li class="layui-hide-xs layui-this"><a href="#">首页</a></li>
-      <li><a href="jie/index">提问</a></li>
-      <li><a href="jie/index">分享<span class="layui-badge-dot"></span></a></li>
-      <li><a href="jie/index">讨论</a></li>
-      <li><a href="jie/index">建议</a></li>
-      <li><a href="jie/index">公告</a></li>
-      <li><a href="jie/index">动态</a></li>
+      <li><a href="#">提问</a></li>
+      <li><a href="#">分享<span class="layui-badge-dot"></span></a></li>
+      <li><a href="#">讨论</a></li>
+      
+      <li><a href="#">公告</a></li>
+      <li><a href="#">动态</a></li>
       <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
     {% if user %}
       <!-- 用户登入后显示 -->
-      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/index">我发表的贴</a></li>
-      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/index#collection">我收藏的贴</a></li>
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="{{ url_for("user_blu.user_index") }}">我发表的贴</a></li>
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="{{ url_for("user_blu.user_index") }}">我收藏的贴</a></li>
     {% endif %}
     </ul>
 
@@ -108,7 +114,12 @@
             {% for detail in details %}
           <li>
             <a href="user/home.html" class="fly-avatar">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+                {% if detail.get("index_image_url") %}
+                    <img src="{{ detail.get("index_image_url") }}" alt="贤心">
+                {% else %}
+                    <img src="../../static/images/avatar/5.jpg">
+                {% endif %}
+
             </a>
             <h2>
               <a class="layui-badge">最新动态</a>
@@ -127,7 +138,7 @@
               <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
               <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
               <span class="fly-list-nums">
-                <i class="iconfont icon-pinglun1" title="回答"></i> 66
+                <i class="iconfont icon-pinglun1" title="回答"></i>66
               </span>
             </div>
             <div class="fly-list-badge">
@@ -219,51 +230,14 @@
 
       <dl class="fly-panel fly-list-one">
         <dt class="fly-panel-title">本周热议</dt>
+        {% for foo in rank_detail %}
         <dd>
-          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
+            {#  未修复      #}
+          <a href="#">{{ foo.title }}</a>
+          <span><i class="iconfont icon-pinglun1"></i>16</span>
         </dd>
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
-{#        <dd>#}
-{#          <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>#}
-{#          <span><i class="iconfont icon-pinglun1"></i> 16</span>#}
-{#        </dd>#}
+          {% endfor %}
 
-        <!-- 无数据时 -->
-        <!--
-        <div class="fly-none">没有相关数据</div>
-        -->
       </dl>
 
       <div class="fly-panel">

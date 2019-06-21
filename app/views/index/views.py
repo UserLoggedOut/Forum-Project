@@ -10,7 +10,7 @@ from . import index_blu
 # @login_user_data
 def index():
     # 数据库查询出来
-
+    rank_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(5)
     # 查询出来detail详情个数
 
     # 2 取出用户登录成功存储的session数据
@@ -21,18 +21,21 @@ def index():
     # 3 分页
     page = request.args.get("page", 1)
     # 数据库查询
-    paginate = db.session.query(Detail).paginate(int(page), 2, False)
+    paginate = db.session.query(Detail).order_by(Detail.create_time.desc()).paginate(int(page), 7, False)
     print(paginate)
 
     # 4 user数据
     details = [x.dict_detail() for x in paginate.items]
     print("存储用户里面的所有列表打印", details)
 
+    comment_info = session.get("comment_info")
     # 3 再次数据库查询User整个数据
     user = db.session.query(User).filter(User.id == user_info).first()
-    user_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(10)    # 主页面
-    return render_template("index.html", user=user, user_detail=user_detail,
-                           paginate=paginate, details=details)
+
+    return render_template("index.html", user=user,
+                           paginate=paginate,
+                           details=details,
+                           rank_detail=rank_detail)
 
 
 @index_blu.route("/detail/<int:new_id>")
@@ -41,14 +44,14 @@ def details(new_id):
     # print(new_id)
     #  1 数据库与url传参对比
     new_detail = db.session.query(Detail).filter(Detail.id == new_id).first()
-    rank_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(8)  # 从detail数据表中查询点击最高的6个数据
-    # print(new_detail, "Detail对象")
+    rank_detail = db.session.query(Detail).order_by(Detail.clicks.desc()).limit(5)  # 从detail数据表中查询点击最高的6个数据
+    print(new_detail, "Detail对象")
 
     user_info2 = session.get("user_id")
-    # print(user_info2, "user_info2， 当前登陆者到id")
+    print(user_info2, "user_info2， 当前登陆者到id")
     # 用户
     user = db.session.query(User).filter(User.id == user_info2).first()
-    # print("detail", user)
+    print("detail", user)
 
     # session 存储用户发布帖子对应的id
     session["detail_id"] = new_detail.user_id
@@ -66,12 +69,29 @@ def details(new_id):
     print(dd_content, '-----------------------当前帖子里所有的评论')
     for i in dd_content:
         print(i.content)
+
+    print("----------------------修改部分----------------------")
+
+    page = request.args.get("page", 1)
+    # 数据库查询
+    paginate = db.session.query(Comment).filter(Comment.detail_id == new_id).paginate(int(page), 5, False)
+    print(paginate)
+
+    # 推导式
+
+    # 评论里的所有评论
+    comment_info = [x.to_basic_dict() for x in paginate.items]
+
+    print(comment_info, "评论里的所有评论")
+
+    session["comment_info"] = comment_info
+
     return render_template("jie/detail.html", new_detail=new_detail,
                            rank_detail=rank_detail,
                            user=user,
                            detail_id=detail_id,
                            dd_content=dd_content,
-                           rr_content=rr_content
-                           )
+                           rr_content=rr_content,
+                           comment_info=comment_info)
 
 

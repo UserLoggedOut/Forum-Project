@@ -16,12 +16,11 @@ class Detail(db.Model):
     user = db.relationship('User', backref=db.backref('detail', lazy='dynamic'))  # user 关联
 
     def dict_detail(self):
-
         news_dict = {
             "id": self.id,
             "title": self.title,
             "create_time": self.create_time.strftime("%Y-%m-%d"),
-            "index_image_url": self.index_image_url,
+            "index_image_url": self.user.avatar_url,
             "clicks": self.clicks,
             "user_name":self.user.user_name,
             "user_id": self.user.id
@@ -40,6 +39,8 @@ class User(db.Model):
     password_hash = db.Column(db.String(128), nullable=False)  # 加密的密码
     create_time = db.Column(db.DateTime, default=datetime.now)  # 注册时间
     signature = db.Column(db.String(512))  # 个性签名
+    city = db.Column(db.String(32))
+
     gender = db.Column(  # 性别
         db.Enum(
             "MAN",  # 男
@@ -47,6 +48,9 @@ class User(db.Model):
         ),
         default="MAN"
     )
+
+    # 用户针对新闻的评论信息
+    comments = db.relationship("Comment", backref="user")
 
     def to_dict_user(self):
         ret = {
@@ -75,9 +79,10 @@ class Comment(db.Model):
         ret = {
             'id': self.id,
             'user_id': self.user_id,
+            "content":self.content,
+            "user_name":self.user.user_name,
+            "images":self.user.avatar_url,
             'detail_id': self.detail_id,
-            'user_avatar_url': self.user.avatar_url,  # 用户头像
-            'user_name': self.user.user_name,  # 用户名
             'create_time': self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             'prent': self.prent.to_basic_dict()if self.parent else None,
         }

@@ -52,8 +52,14 @@
         <a class="fly-nav-avatar" href="javascript:;">
           <cite class="layui-hide-xs">{{ user.user_name }}</cite>
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-          <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+            {% if user.id == 2 %}
+                <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
+            {% endif %}
+            {% if user.avatar_url %}
+            <img src="{{ user.avatar_url }}">
+            {% else %}
+                <img src="../../static/images/avatar/5.jpg">
+            {% endif %}
         </a>
         <dl class="layui-nav-child">
           <dd><a href="user/set.templates"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
@@ -124,7 +130,7 @@
             <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精</span> -->
           </div>
           <span class="fly-list-nums"> 
-            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i>66</a>
+            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i>{{ comment_info | length }}</a>
             <i class="iconfont" title="人气">&#xe60b;</i> 99999
           </span>
         </div>
@@ -171,72 +177,32 @@
         <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
           <legend>回帖</legend>
         </fieldset>
+          {% for comment in comment_info %}
+              <ul class="jieda" id="jieda">
 
-        <ul class="jieda" id="jieda">
-          <li data-id="111" class="jieda-daan">
-            <a name="item-1111111111"></a>
-            <div class="detail-about detail-about-reply">
-              <a class="fly-avatar" href="">
-                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
-              </a>
-              <div class="fly-detail-user">
-                <a href="" class="fly-link">
-                  <cite>贤心</cite>
-                  <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-                  <i class="layui-badge fly-badge-vip">VIP3</i>              
-                </a>
-                
-                <span>(楼主)</span>
-                <!--
-                <span style="color:#5FB878">(管理员)</span>
-                <span style="color:#FF9E3F">（社区之光）</span>
-                <span style="color:#999">（该号已被封）</span>
-                -->
-              </div>
-
-              <div class="detail-hits">
-                <span>2017-11-30</span>
-              </div>
-
-              <i class="iconfont icon-caina" title="最佳答案"></i>
-            </div>
-            <div class="detail-body jieda-body photos">
-              <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
-            </div>
-            <div class="jieda-reply">
-              <span class="jieda-zan zanok" type="zan">
-                <i class="iconfont icon-zan"></i>
-                <em>66</em>
-              </span>
-              <span type="reply">
-                <i class="iconfont icon-svgmoban53"></i>
-                回复
-              </span>
-              <div class="jieda-admin">
-                <span type="edit">编辑</span>
-                <span type="del">删除</span>
-                <!-- <span class="jieda-accept" type="accept">采纳</span> -->
-              </div>
-            </div>
-          </li>
-          
           <li data-id="111">
             <a name="item-1111111111"></a>
             <div class="detail-about detail-about-reply">
               <a class="fly-avatar" href="">
-                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+                {#            图片路劲                  #}
+                  {% if comment.get("images") %}
+                    <img src="{{ comment.get("images") }}" alt="">
+                  {% else %}
+                  <img src="../../static/images/avatar/5.jpg">
+                  {% endif %}
+
               </a>
               <div class="fly-detail-user">
                 <a href="" class="fly-link">
-                  <cite>贤心</cite>       
+                  <cite>{{ comment.get("user_name") }}</cite>
                 </a>
               </div>
               <div class="detail-hits">
-                <span>2017-11-30</span>
+                <span>{{ comment.get("create_time") }}</span>
               </div>
             </div>
             <div class="detail-body jieda-body photos">
-              <p>蓝瘦那个香菇，这是一条没被采纳的回帖</p>
+              <p>{{ comment.get("content") }}</p>
             </div>
             <div class="jieda-reply">
               <span class="jieda-zan" type="zan">
@@ -254,10 +220,14 @@
               </div>
             </div>
           </li>
-          
+
           <!-- 无数据时 -->
           <!-- <li class="fly-none">消灭零回复</li> -->
         </ul>
+
+          {% endfor %}
+
+
         
         <div class="layui-form layui-form-pane">
           <form action="/jie/reply/" method="post">
@@ -268,10 +238,11 @@
               </div>
             </div>
             <div class="layui-form-item">
-              <input type="hidden" name="jid" value={{ detail_id.id }}>
+              <input type="hidden" name="jid" value="{{ new_detail.id }}">
               <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
             </div>
           </form>
+
         </div>
       </div>
     </div>
@@ -285,6 +256,8 @@
           <span><i class="iconfont icon-pinglun1"></i>16</span>
         </dd>
           {% endfor %}
+
+
         
 
         <!-- 无数据时 -->

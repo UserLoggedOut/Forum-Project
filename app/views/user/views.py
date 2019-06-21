@@ -206,7 +206,7 @@ def home():
         return render_template("user/home.html", user=g.user, reply_s=len(reply_s), issue=issue, user_answer=user_answer)
     except Exception as re:
         # return render_template("user/home.html", user=g.user, user_answer=user_answer)
-        return "xxxxxxxxxxxxx"
+        return render_template("user/home.html", user=g.user)
 
 
 # 用户中心
@@ -245,6 +245,7 @@ def set():
             user.email = email
             user.user_name = username
             user.gender = sex
+            user.city = city
             user.signature = sign
 
         if user.password_hash == nowpass:

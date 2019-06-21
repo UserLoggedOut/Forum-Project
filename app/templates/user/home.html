@@ -120,11 +120,14 @@
     <div class="layui-col-md6 fly-home-da">
       <div class="fly-panel">
         <h3 class="fly-panel-title">{{ user.user_name }}的回答</h3>
+
         <ul class="home-jieda">
             {% for i in user_answer %}
                 <li>
-                    <a href="" class="jie-title">{{ i.content }}</a>
+
+                    <a href="/detail/{{ i.detail_id }}" class="jie-title">{{ i.content }}</a>
                     <i>{{ i.contet }}</i>
+
                     <em class="layui-hide-xs"></em>
                 </li>
             {% endfor %}
